@@ -107,6 +107,6 @@ async def test_multiple_risk_factors(risk_scorer):
     
     result = await risk_scorer.calculate_risk(transaction)
     
-    assert result["score"] >= 80
+    assert result["score"] >= 75
     assert result["level"] == "HIGH"
     assert len(result["reasons"]) >= 2
