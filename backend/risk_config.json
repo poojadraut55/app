@@ -1,0 +1,20 @@
+{
+  "blacklist_addresses": [
+    "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"
+  ],
+  "suspicious_methods": [
+    "proxy",
+    "forceTransfer",
+    "transferAll",
+    "killAccount",
+    "setCode"
+  ],
+  "high_value_threshold": 1000000000000,
+  "risk_weights": {
+    "blacklist": 50,
+    "suspicious_method": 30,
+    "high_value": 25,
+    "contract_call": 15,
+    "new_address": 10
+  }
+}
