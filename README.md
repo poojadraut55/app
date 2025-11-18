@@ -123,9 +123,56 @@ cp .env.example .env
 
 # Frontend
 cd /app/frontend
+#mac use brew install yarn
 yarn install
 cp .env.example .env
+#mac use brew install node 
 # Edit .env with your backend URL
+STEP 1 — Fix your Xcode Command Line Tools (required by Node & Brew)
+
+Run:
+
+xcode-select --install
+
+
+If it says they are already installed but outdated, update them:
+
+Option A — Check for macOS updates:
+
+System Settings → General → Software Update
+→ Install Command Line Tools if shown.
+
+Option B — If no update shown, run:
+sudo rm -rf /Library/Developer/CommandLineTools
+sudo xcode-select --install
+
+
+This forces a clean reinstall.
+
+✅ STEP 2 — Make sure Homebrew is healthy
+
+Run:
+
+brew update
+brew doctor
+
+
+If doctor says “Your system is ready to brew.” → Good.
+
+If it shows warnings, paste them here.
+
+✅ STEP 3 — Install Node properly
+
+Once Xcode tools are installed correctly:
+
+brew install node
+
+
+Test:
+
+node -v
+npm -v
+
 ```
 
 ### Run (Development)
