@@ -1,51 +1,80 @@
-import { useEffect } from "react";
-import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
+// © 2025 Deepak Raghunath Raut — All rights reserved. MIT Licensed.
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import axios from 'axios';
+import '@/App.css';
+
+// Import components
+import Header from '@/components/Header';
+import Dashboard from '@/components/Dashboard';
+import TransactionFeed from '@/components/TransactionFeed';
+import NotificationSettings from '@/components/NotificationSettings';
+import WalletConnect from '@/components/WalletConnect';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
+function App() {
+  const [walletConnected, setWalletConnected] = useState(false);
+  const [selectedAccount, setSelectedAccount] = useState(null);
+  const [activeView, setActiveView] = useState('dashboard');
 
   useEffect(() => {
-    helloWorldApi();
+    // Check health on mount
+    const checkHealth = async () => {
+      try {
+        const response = await axios.get(`${API}/health`);
+        console.log('Backend health:', response.data);
+      } catch (error) {
+        console.error('Backend health check failed:', error);
+      }
+    };
+    checkHealth();
   }, []);
 
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
+  const handleWalletConnected = (account) => {
+    setWalletConnected(true);
+    setSelectedAccount(account);
+  };
 
-function App() {
+  const handleWalletDisconnected = () => {
+    setWalletConnected(false);
+    setSelectedAccount(null);
+  };
+
   return (
-    <div className="App">
+    <div className="App min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
+        <Header
+          walletConnected={walletConnected}
+          selectedAccount={selectedAccount}
+          onDisconnect={handleWalletDisconnected}
+          activeView={activeView}
+          setActiveView={setActiveView}
+        />
+        
+        <main className="container mx-auto px-4 py-8">
+          {!walletConnected ? (
+            <WalletConnect onConnect={handleWalletConnected} />
+          ) : (
+            <>
+              {activeView === 'dashboard' && (
+                <Dashboard account={selectedAccount} />
+              )}
+              {activeView === 'transactions' && (
+                <TransactionFeed account={selectedAccount} />
+              )}
+              {activeView === 'notifications' && (
+                <NotificationSettings account={selectedAccount} />
+              )}
+            </>
+          )}
+        </main>
+
+        <footer className="text-center py-8 text-white/60 text-sm">
+          <p>© 2025 Deepak Raghunath Raut — SAFDO Crypto Shield — MIT Licensed</p>
+          <p className="mt-2">Securing the Polkadot Ecosystem</p>
+        </footer>
       </BrowserRouter>
     </div>
   );
